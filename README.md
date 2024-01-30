@@ -2,7 +2,7 @@
 
 
 <div align="center">
-    <img src="images/Pop_box.png" width = "400">
+    <img src="images/Pop_box_logo.png">
 </div>
 
 
