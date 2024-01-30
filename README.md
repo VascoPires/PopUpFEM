@@ -1,6 +1,4 @@
 
-
-
 <div align="center">
     <img src="images/Pop_box_logo.png">
 </div>
@@ -26,3 +24,19 @@ Figure 1: Include here gif of the poping boxes.
 * [imagmagick](https://imagemagick.org) (optional, to create animated gifs of the results)
 
 ### Quick start
+
+### 1. Using the script
+
+#### 1.1 Definition of the stack and box unit
+
+#### 1.2 Dimensions and other parameters
+
+#### 1.3 Running the model
+
+#### 1.4 Output of the model
+
+### 2. Under the hood
+
+#### 2.1 General assumptions
+
+#### 2.2 Definition 
