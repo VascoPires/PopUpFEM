@@ -1,6 +1,6 @@
 
 <div align="center">
-    <img src="images/Pop_box_logo.png">
+    <img src="images/Pop_up_box_logo.png">
 </div>
 
 # PopUpFEM : Automated Abaqus/Python model generation for jumping cubes
@@ -24,7 +24,7 @@ This project was initially conceived as a "Kitchen Mechanics" project using Abaq
 * [FFmpeg](https://ffmpeg.org) (optional, to create animated gifs of the results)
 
 ### Quick start
-
+TO 
 ### 1. Using the script
 
 #### 1.1 Definition of the stack and box unit
