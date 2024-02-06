@@ -3,7 +3,7 @@
     <img src="images/Pop_box_logo.png">
 </div>
 
-# PopUpBoxesFEM : Automated Abaqus/Python model generation for jumping cubes
+# PopUpFEM : Automated Abaqus/Python model generation for jumping cubes
 
 ### Introduction
 Poping boxes is a project developed using Abaqus/Python scripting, in order to simulate the behavior of origami like folded boxes, with a rubber band attached. This is commonly known as Pop Jumping Cubes, and there are a lot of videos on Youtube on how to make them yourself.
