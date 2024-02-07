@@ -1,0 +1,401 @@
+# -*- coding: mbcs -*-
+from part import *
+from material import *
+from section import *
+from assembly import *
+from step import *
+from interaction import *
+from load import *
+from mesh import *
+from optimization import *
+from job import *
+from sketch import *
+from visualization import *
+from connectorBehavior import *
+mdb.Model(modelType=STANDARD_EXPLICIT, name='Pop_Box')
+mdb.models['Pop_Box'].Part(dimensionality=THREE_D, name='Table', type=
+    DISCRETE_RIGID_SURFACE)
+mdb.models['Pop_Box'].parts['Table'].DatumPointByCoordinate(coords=(-650.0, 
+    -650.0, 0))
+mdb.models['Pop_Box'].parts['Table'].DatumPointByCoordinate(coords=(650.0, 
+    -650.0, 0))
+mdb.models['Pop_Box'].parts['Table'].DatumPointByCoordinate(coords=(650.0, 
+    650.0, 0))
+mdb.models['Pop_Box'].parts['Table'].DatumPointByCoordinate(coords=(-650.0, 
+    650.0, 0))
+mdb.models['Pop_Box'].parts['Table'].WirePolyLine(mergeType=MERGE, meshable=ON, 
+    points=[(mdb.models['Pop_Box'].parts['Table'].datums[1], 
+    mdb.models['Pop_Box'].parts['Table'].datums[2]), (
+    mdb.models['Pop_Box'].parts['Table'].datums[2], 
+    mdb.models['Pop_Box'].parts['Table'].datums[3]), (
+    mdb.models['Pop_Box'].parts['Table'].datums[3], 
+    mdb.models['Pop_Box'].parts['Table'].datums[4]), (
+    mdb.models['Pop_Box'].parts['Table'].datums[4], 
+    mdb.models['Pop_Box'].parts['Table'].datums[1])])
+mdb.models['Pop_Box'].parts['Table'].CoverEdges(edgeList=
+    mdb.models['Pop_Box'].parts['Table'].edges.findAt(((-650.0, 325.0, 0.0), ), 
+    ((-325.0, -650.0, 0.0), ), ((650.0, -325.0, 0.0), ), ((325.0, 650.0, 0.0), 
+    ), ), tryAnalytical=False)
+mdb.models['Pop_Box'].parts['Table'].DatumPlaneByPrincipalPlane(offset=0.0, 
+    principalPlane=XZPLANE)
+mdb.models['Pop_Box'].parts['Table'].PartitionFaceByDatumPlane(datumPlane=
+    mdb.models['Pop_Box'].parts['Table'].datums[7], faces=
+    mdb.models['Pop_Box'].parts['Table'].faces.findAt(((-216.666667, 
+    216.666667, 0.0), (0.0, 0.0, -1.0)), ))
+mdb.models['Pop_Box'].parts['Table'].DatumPlaneByPrincipalPlane(offset=0.0, 
+    principalPlane=YZPLANE)
+mdb.models['Pop_Box'].parts['Table'].PartitionFaceByDatumPlane(datumPlane=
+    mdb.models['Pop_Box'].parts['Table'].datums[9], faces=
+    mdb.models['Pop_Box'].parts['Table'].faces.findAt(((-216.666667, 
+    -216.666667, 0.0), (0.0, 0.0, -1.0)), ((216.666667, 216.666667, 0.0), (0.0, 
+    0.0, -1.0)), ))
+mdb.models['Pop_Box'].rootAssembly.Instance(dependent=ON, name='Table', part=
+    mdb.models['Pop_Box'].parts['Table'])
+mdb.models['Pop_Box'].rootAssembly.Set(faces=
+    mdb.models['Pop_Box'].rootAssembly.instances['Table'].faces.findAt(((
+    -216.666667, 216.666667, 0.0), (0.0, 0.0, -1.0)), ((-216.666667, 
+    -433.333333, 0.0), (0.0, 0.0, -1.0)), ((216.666667, -216.666667, 0.0), (
+    0.0, 0.0, -1.0)), ((216.666667, 433.333333, 0.0), (0.0, 0.0, -1.0)), ), 
+    name='Table_Fixed_BC')
+mdb.models['Pop_Box'].EncastreBC(createStepName='Initial', localCsys=None, 
+    name='BC_Box_Fixed', region=
+    mdb.models['Pop_Box'].rootAssembly.sets['Table_Fixed_BC'])
+mdb.models['Pop_Box'].parts['Table'].ReferencePoint(point=(0.0, 0.0, 0.0))
+mdb.models['Pop_Box'].rootAssembly.Set(name='Table_RF_Set', referencePoints=(
+    mdb.models['Pop_Box'].rootAssembly.instances['Table'].referencePoints[11], 
+    ))
+mdb.models['Pop_Box'].EncastreBC(createStepName='Initial', localCsys=None, 
+    name='Table_Fixed_RF', region=
+    mdb.models['Pop_Box'].rootAssembly.sets['Table_RF_Set'])
+mdb.models['Pop_Box'].parts['Table'].seedPart(deviationFactor=0.1, 
+    minSizeFactor=0.1, size=65.0)
+mdb.models['Pop_Box'].parts['Table'].setMeshControls(elemShape=QUAD, regions=
+    mdb.models['Pop_Box'].parts['Table'].faces.findAt(((-216.666667, 
+    216.666667, 0.0), (0.0, 0.0, -1.0)), ((-216.666667, -433.333333, 0.0), (
+    0.0, 0.0, -1.0)), ((216.666667, -216.666667, 0.0), (0.0, 0.0, -1.0)), ((
+    216.666667, 433.333333, 0.0), (0.0, 0.0, -1.0)), ), technique=STRUCTURED)
+mdb.models['Pop_Box'].parts['Table'].generateMesh()
+mdb.models['Pop_Box'].Material(name='Paper')
+mdb.models['Pop_Box'].materials['Paper'].Elastic(table=((2000.0, 0.3), ))
+mdb.models['Pop_Box'].materials['Paper'].Density(table=((5e-10, ), ))
+mdb.models['Pop_Box'].HomogeneousShellSection(idealization=NO_IDEALIZATION, 
+    integrationRule=SIMPSON, material='Paper', name='Paper_Shell_Sect', 
+    nodalThicknessField='', numIntPts=5, poissonDefinition=DEFAULT, 
+    preIntegrate=OFF, temperature=GRADIENT, thickness=0.3, thicknessField='', 
+    thicknessModulus=None, thicknessType=UNIFORM, useDensity=OFF)
+mdb.models['Pop_Box'].Part(dimensionality=THREE_D, name='Part_shell_side-0', 
+    type=DEFORMABLE_BODY)
+mdb.models['Pop_Box'].parts['Part_shell_side-0'].DatumPointByCoordinate(coords=
+    (0, -32.5, 0))
+mdb.models['Pop_Box'].parts['Part_shell_side-0'].DatumPointByCoordinate(coords=
+    (0, 32.5, 0))
+mdb.models['Pop_Box'].parts['Part_shell_side-0'].DatumPointByCoordinate(coords=
+    (64.64392319893777, 32.5, 6.794350112397475))
+mdb.models['Pop_Box'].parts['Part_shell_side-0'].DatumPointByCoordinate(coords=
+    (64.64392319893777, -32.5, 6.794350112397475))
+mdb.models['Pop_Box'].parts['Part_shell_side-0'].WirePolyLine(mergeType=MERGE, 
+    meshable=ON, points=[(
+    mdb.models['Pop_Box'].parts['Part_shell_side-0'].datums[1], 
+    mdb.models['Pop_Box'].parts['Part_shell_side-0'].datums[2]), (
+    mdb.models['Pop_Box'].parts['Part_shell_side-0'].datums[2], 
+    mdb.models['Pop_Box'].parts['Part_shell_side-0'].datums[3]), (
+    mdb.models['Pop_Box'].parts['Part_shell_side-0'].datums[3], 
+    mdb.models['Pop_Box'].parts['Part_shell_side-0'].datums[4]), (
+    mdb.models['Pop_Box'].parts['Part_shell_side-0'].datums[4], 
+    mdb.models['Pop_Box'].parts['Part_shell_side-0'].datums[1])])
+mdb.models['Pop_Box'].parts['Part_shell_side-0'].CoverEdges(edgeList=
+    mdb.models['Pop_Box'].parts['Part_shell_side-0'].edges.findAt(((48.482942, 
+    -32.5, 5.095763), ), ((0.0, -16.25, 0.0), ), ((16.160981, 32.5, 1.698588), 
+    ), ((64.643923, 16.25, 6.79435), ), ), tryAnalytical=False)
+mdb.models['Pop_Box'].parts['Part_shell_side-0'].DatumPlaneByPrincipalPlane(
+    offset=0.0, principalPlane=XZPLANE)
+mdb.models['Pop_Box'].parts['Part_shell_side-0'].PartitionFaceByDatumPlane(
+    datumPlane=mdb.models['Pop_Box'].parts['Part_shell_side-0'].datums[7], 
+    faces=mdb.models['Pop_Box'].parts['Part_shell_side-0'].faces.findAt(((
+    21.547974, -10.833333, 2.264783), (-0.104528, 0.0, 0.994522)), ))
+mdb.models['Pop_Box'].parts['Part_shell_side-0'].Set(faces=
+    mdb.models['Pop_Box'].parts['Part_shell_side-0'].faces.findAt(((43.095947, 
+    -10.833333, 4.529567), (-0.104528, 0.0, 0.994522)), ((21.547974, 10.833333, 
+    2.264783), (-0.104528, 0.0, 0.994522)), ), name=
+    'Part_shell_side-0_side_Whole_Model')
+mdb.models['Pop_Box'].parts['Part_shell_side-0'].SectionAssignment(offset=0.0, 
+    offsetField='', offsetType=MIDDLE_SURFACE, region=
+    mdb.models['Pop_Box'].parts['Part_shell_side-0'].sets['Part_shell_side-0_side_Whole_Model']
+    , sectionName='Paper_Shell_Sect', thicknessAssignment=FROM_SECTION)
+mdb.models['Pop_Box'].rootAssembly.Instance(dependent=ON, name=
+    'S1_A0_Part_shell_side-0', part=
+    mdb.models['Pop_Box'].parts['Part_shell_side-0'])
+mdb.models['Pop_Box'].Part(dimensionality=THREE_D, name='Part_shell_side-1', 
+    type=DEFORMABLE_BODY)
+mdb.models['Pop_Box'].parts['Part_shell_side-1'].DatumPointByCoordinate(coords=
+    (0, -32.5, 0))
+mdb.models['Pop_Box'].parts['Part_shell_side-1'].DatumPointByCoordinate(coords=
+    (0, 32.5, 0))
+mdb.models['Pop_Box'].parts['Part_shell_side-1'].DatumPointByCoordinate(coords=
+    (-64.64392319893777, 32.5, 6.794350112397475))
+mdb.models['Pop_Box'].parts['Part_shell_side-1'].DatumPointByCoordinate(coords=
+    (-64.64392319893777, -32.5, 6.794350112397475))
+mdb.models['Pop_Box'].parts['Part_shell_side-1'].WirePolyLine(mergeType=MERGE, 
+    meshable=ON, points=[(
+    mdb.models['Pop_Box'].parts['Part_shell_side-1'].datums[1], 
+    mdb.models['Pop_Box'].parts['Part_shell_side-1'].datums[2]), (
+    mdb.models['Pop_Box'].parts['Part_shell_side-1'].datums[2], 
+    mdb.models['Pop_Box'].parts['Part_shell_side-1'].datums[3]), (
+    mdb.models['Pop_Box'].parts['Part_shell_side-1'].datums[3], 
+    mdb.models['Pop_Box'].parts['Part_shell_side-1'].datums[4]), (
+    mdb.models['Pop_Box'].parts['Part_shell_side-1'].datums[4], 
+    mdb.models['Pop_Box'].parts['Part_shell_side-1'].datums[1])])
+mdb.models['Pop_Box'].parts['Part_shell_side-1'].CoverEdges(edgeList=
+    mdb.models['Pop_Box'].parts['Part_shell_side-1'].edges.findAt(((-48.482942, 
+    -32.5, 5.095763), ), ((0.0, -16.25, 0.0), ), ((-16.160981, 32.5, 1.698588), 
+    ), ((-64.643923, 16.25, 6.79435), ), ), tryAnalytical=False)
+mdb.models['Pop_Box'].parts['Part_shell_side-1'].DatumPlaneByPrincipalPlane(
+    offset=0.0, principalPlane=XZPLANE)
+mdb.models['Pop_Box'].parts['Part_shell_side-1'].PartitionFaceByDatumPlane(
+    datumPlane=mdb.models['Pop_Box'].parts['Part_shell_side-1'].datums[7], 
+    faces=mdb.models['Pop_Box'].parts['Part_shell_side-1'].faces.findAt(((
+    -21.547974, -10.833333, 2.264783), (-0.104528, 0.0, -0.994522)), ))
+mdb.models['Pop_Box'].parts['Part_shell_side-1'].Set(faces=
+    mdb.models['Pop_Box'].parts['Part_shell_side-1'].faces.findAt(((-43.095947, 
+    -10.833333, 4.529567), (-0.104528, 0.0, -0.994522)), ((-21.547974, 
+    10.833333, 2.264783), (-0.104528, 0.0, -0.994522)), ), name=
+    'Part_shell_side-1_side_Whole_Model')
+mdb.models['Pop_Box'].parts['Part_shell_side-1'].SectionAssignment(offset=0.0, 
+    offsetField='', offsetType=MIDDLE_SURFACE, region=
+    mdb.models['Pop_Box'].parts['Part_shell_side-1'].sets['Part_shell_side-1_side_Whole_Model']
+    , sectionName='Paper_Shell_Sect', thicknessAssignment=FROM_SECTION)
+mdb.models['Pop_Box'].rootAssembly.Instance(dependent=ON, name=
+    'S1_A0_Part_shell_side-1', part=
+    mdb.models['Pop_Box'].parts['Part_shell_side-1'])
+mdb.models['Pop_Box'].Part(dimensionality=THREE_D, name='Part_shell_side-2', 
+    type=DEFORMABLE_BODY)
+mdb.models['Pop_Box'].parts['Part_shell_side-2'].DatumPointByCoordinate(coords=
+    (0, -32.5, 13.58870022479495))
+mdb.models['Pop_Box'].parts['Part_shell_side-2'].DatumPointByCoordinate(coords=
+    (0, 32.5, 13.58870022479495))
+mdb.models['Pop_Box'].parts['Part_shell_side-2'].DatumPointByCoordinate(coords=
+    (-64.64392319893777, 32.5, 6.794350112397475))
+mdb.models['Pop_Box'].parts['Part_shell_side-2'].DatumPointByCoordinate(coords=
+    (-64.64392319893777, -32.5, 6.794350112397475))
+mdb.models['Pop_Box'].parts['Part_shell_side-2'].WirePolyLine(mergeType=MERGE, 
+    meshable=ON, points=[(
+    mdb.models['Pop_Box'].parts['Part_shell_side-2'].datums[1], 
+    mdb.models['Pop_Box'].parts['Part_shell_side-2'].datums[2]), (
+    mdb.models['Pop_Box'].parts['Part_shell_side-2'].datums[2], 
+    mdb.models['Pop_Box'].parts['Part_shell_side-2'].datums[3]), (
+    mdb.models['Pop_Box'].parts['Part_shell_side-2'].datums[3], 
+    mdb.models['Pop_Box'].parts['Part_shell_side-2'].datums[4]), (
+    mdb.models['Pop_Box'].parts['Part_shell_side-2'].datums[4], 
+    mdb.models['Pop_Box'].parts['Part_shell_side-2'].datums[1])])
+mdb.models['Pop_Box'].parts['Part_shell_side-2'].CoverEdges(edgeList=
+    mdb.models['Pop_Box'].parts['Part_shell_side-2'].edges.findAt(((-48.482942, 
+    -32.5, 8.492938), ), ((0.0, -16.25, 13.5887), ), ((-16.160981, 32.5, 
+    11.890113), ), ((-64.643923, 16.25, 6.79435), ), ), tryAnalytical=False)
+mdb.models['Pop_Box'].parts['Part_shell_side-2'].DatumPlaneByPrincipalPlane(
+    offset=0.0, principalPlane=XZPLANE)
+mdb.models['Pop_Box'].parts['Part_shell_side-2'].PartitionFaceByDatumPlane(
+    datumPlane=mdb.models['Pop_Box'].parts['Part_shell_side-2'].datums[7], 
+    faces=mdb.models['Pop_Box'].parts['Part_shell_side-2'].faces.findAt(((
+    -21.547974, -10.833333, 11.323917), (0.104528, 0.0, -0.994522)), ))
+mdb.models['Pop_Box'].parts['Part_shell_side-2'].Set(faces=
+    mdb.models['Pop_Box'].parts['Part_shell_side-2'].faces.findAt(((-43.095947, 
+    -10.833333, 9.059134), (0.104528, 0.0, -0.994522)), ((-21.547974, 
+    10.833333, 11.323917), (0.104528, 0.0, -0.994522)), ), name=
+    'Part_shell_side-2_side_Whole_Model')
+mdb.models['Pop_Box'].parts['Part_shell_side-2'].SectionAssignment(offset=0.0, 
+    offsetField='', offsetType=MIDDLE_SURFACE, region=
+    mdb.models['Pop_Box'].parts['Part_shell_side-2'].sets['Part_shell_side-2_side_Whole_Model']
+    , sectionName='Paper_Shell_Sect', thicknessAssignment=FROM_SECTION)
+mdb.models['Pop_Box'].rootAssembly.Instance(dependent=ON, name=
+    'S1_A0_Part_shell_side-2', part=
+    mdb.models['Pop_Box'].parts['Part_shell_side-2'])
+mdb.models['Pop_Box'].Part(dimensionality=THREE_D, name='Part_shell_side-3', 
+    type=DEFORMABLE_BODY)
+mdb.models['Pop_Box'].parts['Part_shell_side-3'].DatumPointByCoordinate(coords=
+    (0, -32.5, 13.58870022479495))
+mdb.models['Pop_Box'].parts['Part_shell_side-3'].DatumPointByCoordinate(coords=
+    (0, 32.5, 13.58870022479495))
+mdb.models['Pop_Box'].parts['Part_shell_side-3'].DatumPointByCoordinate(coords=
+    (64.64392319893777, 32.5, 6.794350112397475))
+mdb.models['Pop_Box'].parts['Part_shell_side-3'].DatumPointByCoordinate(coords=
+    (64.64392319893777, -32.5, 6.794350112397475))
+mdb.models['Pop_Box'].parts['Part_shell_side-3'].WirePolyLine(mergeType=MERGE, 
+    meshable=ON, points=[(
+    mdb.models['Pop_Box'].parts['Part_shell_side-3'].datums[1], 
+    mdb.models['Pop_Box'].parts['Part_shell_side-3'].datums[2]), (
+    mdb.models['Pop_Box'].parts['Part_shell_side-3'].datums[2], 
+    mdb.models['Pop_Box'].parts['Part_shell_side-3'].datums[3]), (
+    mdb.models['Pop_Box'].parts['Part_shell_side-3'].datums[3], 
+    mdb.models['Pop_Box'].parts['Part_shell_side-3'].datums[4]), (
+    mdb.models['Pop_Box'].parts['Part_shell_side-3'].datums[4], 
+    mdb.models['Pop_Box'].parts['Part_shell_side-3'].datums[1])])
+mdb.models['Pop_Box'].parts['Part_shell_side-3'].CoverEdges(edgeList=
+    mdb.models['Pop_Box'].parts['Part_shell_side-3'].edges.findAt(((48.482942, 
+    -32.5, 8.492938), ), ((0.0, -16.25, 13.5887), ), ((16.160981, 32.5, 
+    11.890113), ), ((64.643923, 16.25, 6.79435), ), ), tryAnalytical=False)
+mdb.models['Pop_Box'].parts['Part_shell_side-3'].DatumPlaneByPrincipalPlane(
+    offset=0.0, principalPlane=XZPLANE)
+mdb.models['Pop_Box'].parts['Part_shell_side-3'].PartitionFaceByDatumPlane(
+    datumPlane=mdb.models['Pop_Box'].parts['Part_shell_side-3'].datums[7], 
+    faces=mdb.models['Pop_Box'].parts['Part_shell_side-3'].faces.findAt(((
+    21.547974, -10.833333, 11.323917), (0.104528, 0.0, 0.994522)), ))
+mdb.models['Pop_Box'].parts['Part_shell_side-3'].Set(faces=
+    mdb.models['Pop_Box'].parts['Part_shell_side-3'].faces.findAt(((43.095947, 
+    -10.833333, 9.059134), (0.104528, 0.0, 0.994522)), ((21.547974, 10.833333, 
+    11.323917), (0.104528, 0.0, 0.994522)), ), name=
+    'Part_shell_side-3_side_Whole_Model')
+mdb.models['Pop_Box'].parts['Part_shell_side-3'].SectionAssignment(offset=0.0, 
+    offsetField='', offsetType=MIDDLE_SURFACE, region=
+    mdb.models['Pop_Box'].parts['Part_shell_side-3'].sets['Part_shell_side-3_side_Whole_Model']
+    , sectionName='Paper_Shell_Sect', thicknessAssignment=FROM_SECTION)
+mdb.models['Pop_Box'].rootAssembly.Instance(dependent=ON, name=
+    'S1_A0_Part_shell_side-3', part=
+    mdb.models['Pop_Box'].parts['Part_shell_side-3'])
+mdb.models['Pop_Box'].ContactProperty('Contact_Prop')
+mdb.models['Pop_Box'].interactionProperties['Contact_Prop'].TangentialBehavior(
+    dependencies=0, directionality=ISOTROPIC, elasticSlipStiffness=None, 
+    formulation=PENALTY, fraction=0.005, maximumElasticSlip=FRACTION, 
+    pressureDependency=OFF, shearStressLimit=None, slipRateDependency=OFF, 
+    table=((0.4, ), ), temperatureDependency=OFF)
+mdb.models['Pop_Box'].ContactExp(createStepName='Initial', name=
+    'General_Contact')
+mdb.models['Pop_Box'].interactions['General_Contact'].includedPairs.setValuesInStep(
+    stepName='Initial', useAllstar=ON)
+mdb.models['Pop_Box'].interactions['General_Contact'].contactPropertyAssignments.appendInStep(
+    assignments=((GLOBAL, SELF, 'Contact_Prop'), ), stepName='Initial')
+mdb.models['Pop_Box'].interactionProperties['Contact_Prop'].tangentialBehavior.setValues(
+    dependencies=0, directionality=ISOTROPIC, elasticSlipStiffness=None, 
+    formulation=PENALTY, fraction=0.005, maximumElasticSlip=FRACTION, 
+    pressureDependency=OFF, shearStressLimit=None, slipRateDependency=OFF, 
+    table=((0.4, ), ), temperatureDependency=OFF)
+mdb.models['Pop_Box'].ConnectorSection(name='S1_A0_Spring', translationalType=
+    AXIAL, u1ReferenceLength=85.0)
+mdb.models['Pop_Box'].sections['S1_A0_Spring'].setValues(behaviorOptions=(
+    ConnectorElasticity(table=((0.0077, ), ), independentComponents=(), 
+    components=(1, )), ))
+mdb.models['Pop_Box'].rootAssembly.WirePolyLine(mergeType=IMPRINT, meshable=OFF
+    , points=((
+    mdb.models['Pop_Box'].rootAssembly.instances['S1_A0_Part_shell_side-0'].vertices.findAt(
+    (64.643923, 0.0, 6.79435), ), 
+    mdb.models['Pop_Box'].rootAssembly.instances['S1_A0_Part_shell_side-1'].vertices.findAt(
+    (-64.643923, 0.0, 6.79435), )), ))
+mdb.models['Pop_Box'].rootAssembly.Set(edges=
+    mdb.models['Pop_Box'].rootAssembly.edges.findAt(((0.0, 0.0, 
+    6.79435011239747), )), name='S1_A0_Wire_Spring')
+mdb.models['Pop_Box'].rootAssembly.DatumCsysByThreePoints(coordSysType=
+    CARTESIAN, name='S1_A0_Spring_CSYS', origin=
+    mdb.models['Pop_Box'].rootAssembly.instances['S1_A0_Part_shell_side-1'].vertices.findAt(
+    (-64.643923, 0.0, 6.79435), ), point1=
+    mdb.models['Pop_Box'].rootAssembly.instances['S1_A0_Part_shell_side-0'].vertices.findAt(
+    (64.643923, 0.0, 6.79435), ), point2=
+    mdb.models['Pop_Box'].rootAssembly.instances['S1_A0_Part_shell_side-1'].vertices.findAt(
+    (-64.643923, 32.5, 6.79435), ))
+mdb.models['Pop_Box'].rootAssembly.SectionAssignment(region=
+    mdb.models['Pop_Box'].rootAssembly.sets['S1_A0_Wire_Spring'], sectionName=
+    'S1_A0_Spring')
+mdb.models['Pop_Box'].rootAssembly.sectionAssignments[0].getSet()
+mdb.models['Pop_Box'].rootAssembly.ConnectorOrientation(localCsys1=
+    mdb.models['Pop_Box'].rootAssembly.datums[15], region=
+    mdb.models['Pop_Box'].rootAssembly.allSets['S1_A0_Wire_Spring'])
+mdb.models['Pop_Box'].parts['Part_shell_side-0'].Set(edges=
+    mdb.models['Pop_Box'].parts['Part_shell_side-0'].edges.findAt(((
+    64.6439231989378, -16.25, 6.79435011239747), ), ((64.6439231989378, 16.25, 
+    6.79435011239747), ), ), name='O_Fold_4_set1')
+mdb.models['Pop_Box'].parts['Part_shell_side-3'].Set(edges=
+    mdb.models['Pop_Box'].parts['Part_shell_side-3'].edges.findAt(((
+    64.6439231989378, -16.25, 6.79435011239747), ), ((64.6439231989378, 16.25, 
+    6.79435011239747), ), ), name='O_Fold_4_set2')
+mdb.models['Pop_Box'].Tie(adjust=ON, main=
+    mdb.models['Pop_Box'].rootAssembly.instances['S1_A0_Part_shell_side-0'].sets['O_Fold_4_set1']
+    , name='S1_A0_O_Fold_4', positionToleranceMethod=COMPUTED, secondary=
+    mdb.models['Pop_Box'].rootAssembly.instances['S1_A0_Part_shell_side-3'].sets['O_Fold_4_set2']
+    , thickness=ON, tieRotations=OFF)
+mdb.models['Pop_Box'].parts['Part_shell_side-1'].Set(edges=
+    mdb.models['Pop_Box'].parts['Part_shell_side-1'].edges.findAt(((
+    -64.6439231989378, -16.25, 6.79435011239747), ), ((-64.6439231989378, 
+    16.25, 6.79435011239747), ), ), name='O_Fold_2_set1')
+mdb.models['Pop_Box'].parts['Part_shell_side-2'].Set(edges=
+    mdb.models['Pop_Box'].parts['Part_shell_side-2'].edges.findAt(((
+    -64.6439231989378, -16.25, 6.79435011239747), ), ((-64.6439231989378, 
+    16.25, 6.79435011239747), ), ), name='O_Fold_2_set2')
+mdb.models['Pop_Box'].Tie(adjust=ON, main=
+    mdb.models['Pop_Box'].rootAssembly.instances['S1_A0_Part_shell_side-1'].sets['O_Fold_2_set1']
+    , name='S1_A0_O_Fold_2', positionToleranceMethod=COMPUTED, secondary=
+    mdb.models['Pop_Box'].rootAssembly.instances['S1_A0_Part_shell_side-2'].sets['O_Fold_2_set2']
+    , thickness=ON, tieRotations=OFF)
+mdb.models['Pop_Box'].parts['Part_shell_side-2'].Set(edges=
+    mdb.models['Pop_Box'].parts['Part_shell_side-2'].edges.findAt(((0.0, 
+    -16.25, 13.5887002247949), ), ((0.0, 16.25, 13.5887002247949), ), ), name=
+    'O_Fold_3_set1')
+mdb.models['Pop_Box'].parts['Part_shell_side-3'].Set(edges=
+    mdb.models['Pop_Box'].parts['Part_shell_side-3'].edges.findAt(((0.0, 
+    -16.25, 13.5887002247949), ), ((0.0, 16.25, 13.5887002247949), ), ), name=
+    'O_Fold_3_set2')
+mdb.models['Pop_Box'].Tie(adjust=ON, main=
+    mdb.models['Pop_Box'].rootAssembly.instances['S1_A0_Part_shell_side-2'].sets['O_Fold_3_set1']
+    , name='S1_A0_O_Fold_3', positionToleranceMethod=COMPUTED, secondary=
+    mdb.models['Pop_Box'].rootAssembly.instances['S1_A0_Part_shell_side-3'].sets['O_Fold_3_set2']
+    , thickness=ON, tieRotations=OFF)
+mdb.models['Pop_Box'].parts['Part_shell_side-0'].Set(edges=
+    mdb.models['Pop_Box'].parts['Part_shell_side-0'].edges.findAt(((0.0, 
+    -16.25, 0.0), ), ((0.0, 16.25, 0.0), ), ), name='O_Fold_1_set1')
+mdb.models['Pop_Box'].parts['Part_shell_side-1'].Set(edges=
+    mdb.models['Pop_Box'].parts['Part_shell_side-1'].edges.findAt(((0.0, 
+    -16.25, 0.0), ), ((0.0, 16.25, 0.0), ), ), name='O_Fold_1_set2')
+mdb.models['Pop_Box'].Tie(adjust=ON, main=
+    mdb.models['Pop_Box'].rootAssembly.instances['S1_A0_Part_shell_side-0'].sets['O_Fold_1_set1']
+    , name='S1_A0_O_Fold_1', positionToleranceMethod=COMPUTED, secondary=
+    mdb.models['Pop_Box'].rootAssembly.instances['S1_A0_Part_shell_side-1'].sets['O_Fold_1_set2']
+    , thickness=ON, tieRotations=OFF)
+mdb.models['Pop_Box'].ExplicitDynamicsStep(improvedDtMethod=ON, name=
+    'Explicit_step', previous='Initial', timePeriod=1.2)
+mdb.models['Pop_Box'].Gravity(comp3=-9810, createStepName='Explicit_step', 
+    distributionType=UNIFORM, field='', name='Gravity')
+mdb.models['Pop_Box'].parts['Part_shell_side-0'].seedPart(deviationFactor=0.1, 
+    minSizeFactor=0.1, size=6.5)
+mdb.models['Pop_Box'].parts['Part_shell_side-0'].setMeshControls(elemShape=QUAD
+    , regions=mdb.models['Pop_Box'].parts['Part_shell_side-0'].faces.findAt(((
+    43.095947, -10.833333, 4.529567), (-0.104528, 0.0, 0.994522)), ((21.547974, 
+    10.833333, 2.264783), (-0.104528, 0.0, 0.994522)), ), technique=STRUCTURED)
+mdb.models['Pop_Box'].parts['Part_shell_side-0'].generateMesh()
+mdb.models['Pop_Box'].parts['Part_shell_side-1'].seedPart(deviationFactor=0.1, 
+    minSizeFactor=0.1, size=6.5)
+mdb.models['Pop_Box'].parts['Part_shell_side-1'].setMeshControls(elemShape=QUAD
+    , regions=mdb.models['Pop_Box'].parts['Part_shell_side-1'].faces.findAt(((
+    -43.095947, -10.833333, 4.529567), (-0.104528, 0.0, -0.994522)), ((
+    -21.547974, 10.833333, 2.264783), (-0.104528, 0.0, -0.994522)), ), 
+    technique=STRUCTURED)
+mdb.models['Pop_Box'].parts['Part_shell_side-1'].generateMesh()
+mdb.models['Pop_Box'].parts['Part_shell_side-2'].seedPart(deviationFactor=0.1, 
+    minSizeFactor=0.1, size=6.5)
+mdb.models['Pop_Box'].parts['Part_shell_side-2'].setMeshControls(elemShape=QUAD
+    , regions=mdb.models['Pop_Box'].parts['Part_shell_side-2'].faces.findAt(((
+    -43.095947, -10.833333, 9.059134), (0.104528, 0.0, -0.994522)), ((
+    -21.547974, 10.833333, 11.323917), (0.104528, 0.0, -0.994522)), ), 
+    technique=STRUCTURED)
+mdb.models['Pop_Box'].parts['Part_shell_side-2'].generateMesh()
+mdb.models['Pop_Box'].parts['Part_shell_side-3'].seedPart(deviationFactor=0.1, 
+    minSizeFactor=0.1, size=6.5)
+mdb.models['Pop_Box'].parts['Part_shell_side-3'].setMeshControls(elemShape=QUAD
+    , regions=mdb.models['Pop_Box'].parts['Part_shell_side-3'].faces.findAt(((
+    43.095947, -10.833333, 9.059134), (0.104528, 0.0, 0.994522)), ((21.547974, 
+    10.833333, 11.323917), (0.104528, 0.0, 0.994522)), ), technique=STRUCTURED)
+mdb.models['Pop_Box'].parts['Part_shell_side-3'].generateMesh()
+mdb.models['Pop_Box'].rootAssembly.Set(name='S1_A0_Top_node', vertices=
+    mdb.models['Pop_Box'].rootAssembly.instances['S1_A0_Part_shell_side-3'].vertices.findAt(
+    ((0.0, 32.5, 13.5887002247949), )))
+mdb.models['Pop_Box'].fieldOutputRequests['F-Output-1'].setValues(numIntervals=
+    20, variables=('S', 'U', 'V'))
+mdb.models['Pop_Box'].HistoryOutputRequest(createStepName='Explicit_step', 
+    name='S1_A0_U3', rebar=EXCLUDE, region=
+    mdb.models['Pop_Box'].rootAssembly.sets['S1_A0_Top_node'], sectionPoints=
+    DEFAULT, variables=('U3', ))
+mdb.models['Pop_Box'].rootAssembly.translate(instanceList=
+    ['S1_A0_Part_shell_side-0', 'S1_A0_Part_shell_side-1', 
+    'S1_A0_Part_shell_side-2', 'S1_A0_Part_shell_side-3'], vector=(0.0, 0.0, 
+    0.0))
+mdb.models['Pop_Box'].rootAssembly.translate(instanceList=
+    ['S1_A0_Part_shell_side-0', 'S1_A0_Part_shell_side-1', 
+    'S1_A0_Part_shell_side-2', 'S1_A0_Part_shell_side-3'], vector=(0.0, 0.0, 
+    0.0))
+# Save by p2321038 on 2024_02_07-13.51.13; build 2022 2021_09_15-19.57.30 176069
