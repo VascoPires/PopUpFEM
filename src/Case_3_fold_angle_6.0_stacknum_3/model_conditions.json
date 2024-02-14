@@ -1,0 +1,63 @@
+{
+    "BC_dict": {
+        "band_stiff": 0.00924, 
+        "fold_angle": 6.0, 
+        "ref_length": 85.0, 
+        "gravity_constant": 9810, 
+        "friction_coef": 0.4
+    }, 
+    "job_name": "Job_test", 
+    "model_def": {
+        "Box": {
+            "l_Z": 40.76610067438485, 
+            "Lid": false, 
+            "l_X": 150.0, 
+            "l_Y": 295.0
+        }, 
+        "S2": {
+            "colors": [
+                "Salmon", 
+                "Light Orange", 
+                "Sand Red"
+            ], 
+            "dY": 75.0, 
+            "dX": 0.0, 
+            "n": 3
+        }, 
+        "S1": {
+            "colors": [
+                "Medium Azure", 
+                "Maersk Blue", 
+                "Dark Azure"
+            ], 
+            "dY": 0.0, 
+            "dX": 0.0, 
+            "n": 3
+        },
+        "S3": {
+            "colors": [
+                "Light Yellow", 
+                "Yellow", 
+                "Lime"
+            ], 
+            "dY": 0.0, 
+            "dX": 0.0, 
+            "n": 3
+        }
+    }, 
+    "main_dict": {
+        "E": 2000.0, 
+        "Modeltype": "3D", 
+        "Poisson": 0.3, 
+        "scale_factor": 20.0, 
+        "time_period": 1.2, 
+        "Job_name": "Job_test", 
+        "sim_name": "Case_2", 
+        "modelName": "Pop_Box", 
+        "density": 5e-10, 
+        "l": 65.0, 
+        "nCPU": 4, 
+        "t": 0.3, 
+        "run_job": true
+    }
+}

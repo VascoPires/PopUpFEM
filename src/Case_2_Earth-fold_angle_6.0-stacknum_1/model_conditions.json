@@ -1,0 +1,36 @@
+{
+    "BC_dict": {
+        "band_stiff": 0.0077, 
+        "fold_angle": 6.0, 
+        "ref_length": 85.0, 
+        "gravity_constant": 9810, 
+        "friction_coef": 0.4
+    }, 
+    "model_def": {
+        "S1": {
+            "colors": [
+                "Salmon"
+            ], 
+            "dY": 0.0, 
+            "dX": 0.0, 
+            "n": 1
+        }
+    }, 
+    "main_dict": {
+        "E": 2000.0, 
+        "Modeltype": "3D", 
+        "Make_gif": true, 
+        "Poisson": 0.3, 
+        "scale_factor": 20.0, 
+        "time_period": 1.2, 
+        "Job_name": "1_c_3D", 
+        "num_intervals": 20, 
+        "sim_name": "Case_2_Earth", 
+        "modelName": "Pop_Box", 
+        "density": 5e-10, 
+        "l": 65.0, 
+        "nCPU": 6, 
+        "t": 0.3, 
+        "run_job": true
+    }
+}

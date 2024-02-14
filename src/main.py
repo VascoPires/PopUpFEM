@@ -10,6 +10,7 @@ import json
 import os
 import shutil
 import numpy as np
+import sys
 
 # Creates the parts dictionaries
 from parts_dics_gen import get_parts_dict, get_folds_dict
@@ -19,6 +20,15 @@ session.journalOptions.setValues(replayGeometry=COORDINATE, recoverGeometry=COOR
 TOL = 1E-6
 
 def get_mid_point(point1,point2):
+    """Calculate the midpoint between two points.
+
+    Args:
+    point1 (tuple): Coordinates of the first point (x, y, z).
+    point2 (tuple): Coordinates of the second point (x, y, z).
+
+    Returns:
+    tuple: Coordinates of the midpoint (x, y, z).
+    """
     x = (point1[0]+point2[0])/2
     y = (point1[1]+point2[1])/2
     z = (point1[2]+point2[2])/2
@@ -26,11 +36,31 @@ def get_mid_point(point1,point2):
 
 # Function to mirror a point across the X-Z plane
 def mirror_point_y(point):
+    """Mirror a point across the X-Z plane.
+
+    Args:
+    point (tuple): Coordinates of the point (x, y, z).
+
+    Returns:
+    tuple: Mirrored coordinates of the point (x, -y, z).
+    """
     x, y, z = point
     return (x, -y, z)
 
 
 def generate_tie_sets(main_dict, fold_name, set_dict, assembly_obj, Assembly_name):
+    """Generate tie sets for parts.
+
+    Args:
+    main_dict (dict): Main dictionary containing parameters.
+    fold_name (str): Name of the fold.
+    set_dict (dict): Dictionary containing set information.
+    assembly_obj (obj): Assembly object.
+    Assembly_name (str): Name of the assembly.
+
+    Returns:
+    tuple: Tuple containing the main set and secondary set.
+    """
     a = assembly_obj
     part_1 = main_dict['my_Model'].parts[set_dict['Part_1']]
     part_2 = main_dict['my_Model'].parts[set_dict['Part_2']]
@@ -58,7 +88,16 @@ def generate_tie_sets(main_dict, fold_name, set_dict, assembly_obj, Assembly_nam
     return main_set, sec_set
 
 def gen_mesh(main_dict, part_name, size):
+    """Generate mesh for a part.
 
+    Args:
+    main_dict (dict): Main dictionary containing parameters.
+    part_name (str): Name of the part.
+    size (float): Size of the mesh.
+
+    Returns:
+    None
+    """
     p = main_dict['my_Model'].parts[part_name]
     p.seedPart(size=size, deviationFactor=0.1, minSizeFactor=0.1)
 
@@ -73,6 +112,14 @@ def gen_mesh(main_dict, part_name, size):
 
 
 def generate_material_section(main_dict):
+    """Generate material and section.
+
+    Args:
+    main_dict (dict): Main dictionary containing parameters.
+
+    Returns:
+    None
+    """
     main_dict['my_Model'].Material(name='Paper')
     main_dict['my_Model'].materials['Paper'].Elastic(table=((main_dict['E'], main_dict['Poisson']), ))
     main_dict['my_Model'].materials['Paper'].Density(table=((main_dict['density'], ), ))
@@ -86,7 +133,16 @@ def generate_material_section(main_dict):
 
 
 def assign_section(main_dict,p, part_name):
+    """Assign section to a part.
 
+    Args:
+    main_dict (dict): Main dictionary containing parameters.
+    p (obj): Part object.
+    part_name (str): Name of the part.
+
+    Returns:
+    None
+    """
     # Assign Section
     f = p.faces
     model_face = f.getByBoundingBox(zMin=-100*main_dict['l'])
@@ -98,6 +154,20 @@ def assign_section(main_dict,p, part_name):
 
 
 def gen_part(main_dict, part_name, points, assembly_obj, Assembly_name, ly_lid_box=1):
+    """Generates assembly instances depending on the inputs. Able to generate the table, box,
+        and all the instances required to make the cube.
+ 
+    Args:
+    main_dict (dict): Main dictionary containing parameters.
+    part_name (str): Name of the part.
+    points (list): List of coordinates for points.
+    assembly_obj (obj): Assembly object.
+    Assembly_name (str): Name of the assembly.
+    ly_lid_box (int, optional): Length of lid box. Defaults to 1.
+
+    Returns:
+    None
+    """
     if part_name == 'Table' or part_name == 'Box_Lid':
         p = main_dict['my_Model'].Part(name=part_name, dimensionality=THREE_D, type=DISCRETE_RIGID_SURFACE)
     else:
@@ -139,9 +209,6 @@ def gen_part(main_dict, part_name, points, assembly_obj, Assembly_name, ly_lid_b
             pickedFaces = p.faces.getByBoundingBox(zMin=0-TOL)
             p.PartitionFaceByDatumPlane(datumPlane=d[YZ_plane.id], faces=pickedFaces)
             
-
-
-
     ##### Assign Material and BC ####
     if part_name != 'Box_Lid':
         if part_name != 'Table':
@@ -187,7 +254,15 @@ def gen_part(main_dict, part_name, points, assembly_obj, Assembly_name, ly_lid_b
     return
 
 def gen_table(main_dict,assembly_obj):
+    """Generates the table.
 
+    Args:
+    main_dict (dict): Main dictionary containing parameters.
+    assembly_obj (obj): Assembly object.
+
+    Returns:
+    None
+    """
     table_point_list = [ 
         (-main_dict['l']*main_dict['scale_factor']/2, -main_dict['l']*main_dict['scale_factor']/2, 0),
         (main_dict['l']*main_dict['scale_factor']/2, -main_dict['l']*main_dict['scale_factor']/2, 0),
@@ -205,7 +280,18 @@ def gen_table(main_dict,assembly_obj):
 ###################################
 
 def gen_spring(main_dict, BC_dict, Geom_Prop, assembly_obj, Assembly_name):
+    """Generate the spring connector.
 
+    Args:
+    main_dict (dict): Main dictionary containing parameters.
+    BC_dict (dict): Boundary condition dictionary.
+    Geom_Prop (dict): Geometry properties dictionary.
+    assembly_obj (obj): Assembly object.
+    Assembly_name (str): Name of the assembly.
+
+    Returns:
+    None
+    """
     ### Create Spring Connector
     main_dict['my_Model'].ConnectorSection(name=Assembly_name + 'Spring', u1ReferenceLength=BC_dict['ref_length'], translationalType=AXIAL)
     spring_connector_section = main_dict['my_Model'].sections[Assembly_name + 'Spring']
@@ -246,7 +332,17 @@ def gen_spring(main_dict, BC_dict, Geom_Prop, assembly_obj, Assembly_name):
 
 
 def gen_box_unit(main_dict,BC_dict, Assembly_name, a):
+    """Generates the box unit.
 
+    Args:
+    main_dict (dict): Main dictionary containing parameters.
+    BC_dict (dict): Boundary condition dictionary.
+    Assembly_name (str): Name of the assembly.
+    a (obj): Assembly object.
+
+    Returns:
+    None
+    """
     fold_angle_rad = BC_dict['fold_angle']*np.pi/180
     phi = np.arcsin(np.tan(fold_angle_rad))
 
@@ -350,7 +446,17 @@ def gen_box_unit(main_dict,BC_dict, Assembly_name, a):
 
 
 def gen_box(main_dict, box_info, assembly_obj, Assembly_name):
+    """Generate the box where the cubes are placed.
 
+    Args:
+    main_dict (dict): Main dictionary containing parameters.
+    box_info (dict): Box information dictionary.
+    assembly_obj (obj): Assembly object.
+    Assembly_name (str): Name of the assembly.
+
+    Returns:
+    None
+    """
     lx = box_info['l_X']
     ly = box_info['l_Y']
     lz = box_info['l_Z']
@@ -428,7 +534,16 @@ def change_dir(dir_name, if_change_directly = 0, if_change=0, if_clear=0):
 
 
 def run_model(model, job_name, n_proc=4, run_job = True):
-    """Run Abaqus model with a job called job_name using n_proc processors. Use double precision.
+    """Run an Abaqus model with a job called job_name using n_proc processors. Use double precision.
+
+    Args:
+    model (obj): Abaqus model object.
+    job_name (str): Name of the job.
+    n_proc (int): Number of processors. Defaults to 4.
+    run_job (bool): If True, run the job. Defaults to True.
+
+    Returns:
+    None
     """
     # if job_name is empty, just use the model name
     if job_name == '':
@@ -453,11 +568,39 @@ def run_model(model, job_name, n_proc=4, run_job = True):
     else:
         return
 
+
+def print_cmd(string):
+    """Print a command string.
+    
+    Args:
+    string (str): Command string to print.
+
+    Returns:
+    None
+    """
+    print >> sys.__stdout__,string
+
 #####################################################################################################3
 
 # Function Create Model:
 
 def create_model(main_dict, BC_dict, model_def):
+    """Create an Abaqus model based on the provided parameters and model definition.
+
+    This function generates an Abaqus model using the provided parameters and model definition. It also creates a folder
+    for a given case and the respective JSON file containing the model conditions.
+    
+    Args:
+    main_dict (dict): Main dictionary containing parameters.
+    BC_dict (dict): Boundary condition dictionary.
+    model_def (dict): Model definition dictionary.
+
+    Returns:
+    None
+    """
+    # Deletes any previous Model object (in case of loops) with mostly the same dictionary
+    if main_dict.get('my_Model', False):
+        del main_dict['my_Model']
 
     ### Define parameters for postprocessing and generates
     job_name = main_dict.get('Job_name', None)  # Provides None if 'Job_name' does not exist
@@ -539,8 +682,16 @@ def create_model(main_dict, BC_dict, model_def):
             region=region, localCsys=None)    
 
     # Runs the job - Be careful that this may only work with NoGUI on
+
+    print_cmd('The simulation was submitted with the following parameters:')
+    print_cmd(str([main_dict['my_Model'], job_name , main_dict['nCPU'], main_dict['run_job']]))
+    print_cmd('----------------------------------------------------')
+    print_cmd('You can check the progress of the simulation in the .sta file.')
+    
     run_model(main_dict['my_Model'], job_name , main_dict['nCPU'], main_dict['run_job'])
 
 
     # Change back to the original folder
     change_dir(dir_0 , if_change_directly = 1)
+    
+    

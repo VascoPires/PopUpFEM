@@ -16,43 +16,19 @@ from collections import OrderedDict
 
 ########### Post_Processsing ######
 
-def change_dir(dir_name, if_change_directly = 0, if_change=0, if_clear=0):
-    """Create folder and possibly change the work directory to it
-
-    Args:
-    dir_name (str): String that defines the directory name. Can also be a path if used with if_change_directly = True
-    if_change_directly (bool): If yes the directory is changed directory if it is given in dir_name
-    if_change (bool): If the directory should be set as the work directory
-    if_clear (bool): If the directory already exists, should its content (including all sub-folders) be deleted 
-
-    Returns:
-    dir_abs (str): The absolute path of the created directory
-    """
-    dir_abs = os.path.abspath('')
-
-    if if_change_directly:
-        os.chdir(dir_name)
-        return
-    # if path does not exist: create
-    if os.path.exists(dir_name) == 0:
-        os.mkdir(dir_name)
-    else:
-        # if it exists: clear if if_clear==1
-        if if_clear:
-            shutil.rmtree(dir_name)
-            os.mkdir(dir_name)
-    dir1 = dir_abs + "/" + dir_name
-
-    # change into the dir_name directory
-    if if_change:
-        os.chdir(dir1)
-    return dir_abs
-
 def remove_files(dir0,type_list=('.log', '.msg')):
     """Remove all files in the directory dir that end with the strings
     given in type_list and additional predefined strings. Some only with
     'ms.mdl' because they are needed for the first, implicit model to
-    load the results"""
+    load the results
+    
+    Args:
+    dir0 (str): The directory path where files are to be removed.
+    type_list (tuple, optional): A tuple of file extensions to be removed. Defaults to ('.log', '.msg').
+    
+    Returns:
+    None
+    """
     type0_list = ('.com', '.sim', '.SMABulk', '.pac', '.abq',
                   '.dmp', '.exception', '.simdir', 'ms.mdl', 'ms.prt',
                   'ms.res', 'ms.res', 'ms.sel', 'ms.stt')
@@ -77,11 +53,12 @@ def remove_files(dir0,type_list=('.log', '.msg')):
 def color_box_unit(vp1,instances):
     """Assign colors to the displayed instances either from the defined colors in the `assembly` dictionary or as random colors.
     
-    Based on the function from BrickFEM from Martin PLetz (https://github.com/mpletz/BrickFEM/tree/main)
-    
     Args:
-        vp1 (Abaqus viewport): The viewport, needed to set the display colors
-        instances (dict): The instances of the model or the odb
+    vp1 (Abaqus viewport): The viewport, needed to set the display colors.
+    instances (dict): The instances of the model or the odb.
+    
+    Returns:
+    None
     """
 
     # Lego colors from bricklink (only solid colors): https://www.bricklink.com/catalogColors.asp
@@ -159,6 +136,16 @@ def color_box_unit(vp1,instances):
 #################
 
 def assign_colors_to_assemblies_with_hex(model_def, color_lib, default_color='White'):
+    """Assign colors to assemblies based on a provided model definition and color library.
+    
+    Args:
+    model_def (dict): The model definition containing assembly information.
+    color_lib (dict): A dictionary mapping color names to hexadecimal color codes.
+    default_color (str, optional): The default color to use if a specific color is not provided. Defaults to 'White'.
+    
+    Returns:
+    dict: A dictionary mapping assembly names to hexadecimal color codes.
+    """
     assembly_colors_dict = {}
     assembly_index = 0  # Initialize an assembly index that increments across stacks
     for stack, details in sorted(model_def.items()):  # Sort to ensure consistent order in Python 2.7
@@ -197,12 +184,6 @@ color_lib = {
 
 
 #################
-
-# Input file with post-processing options
-# Change to directory above
-# from x import main_postprocessing
-
-
 
 #################
 # Def main_postprocessing:
@@ -247,13 +228,6 @@ sorted_stacks = sorted([key for key in model_def.keys() if key.startswith('S')],
 stacks_with_colors = OrderedDict((stack, model_def[stack]["colors"]) for stack in sorted_stacks)
 
 assigned_colors_hex_dict = assign_colors_to_assemblies_with_hex(model_def, color_lib)
-#### Stacks ordenados
-
-
-#cmap_dict = {instances[0]:(True, '#' + col_list[i], 'Default', '#' + col_list[i])}
-
-#cmap.updateOverrides(overrides={'ASSEMBLY':(True, '#FFFFFF', 'Default', 
-#    '#FFFFFF')})
 
 i = 0
 instance_color_list = []
@@ -322,28 +296,27 @@ vp1.view.setValues(session.views['User-1'])
 vp1.viewportAnnotationOptions.setValues(triad=OFF, state=OFF, legendBackgroundStyle=MATCH,
                                         annotations=OFF, compass=OFF, title=OFF, legend=OFF)
 
-
-
-
 session.pngOptions.setValues(imageSize=(160*8, 160*8))
 
 
 # Generate folder for images
-dir_0 = os.path.abspath('')                             # Saves original dir
-change_dir('img-video', if_change=1, if_clear=1)
+dir_0 = os.path.abspath('')
 
-# print png images for all frames in the load step
-for i_frame in range(len(odb.steps['Explicit_step'].frames)):
+if main_dict.get('Make_gif', False):
+    change_dir('img-video', if_change=1, if_clear=1)
 
-    vp1.odbDisplay.setFrame(step=0, frame=i_frame)
-    session.printToFile(fileName='anim-' + str(i_frame).zfill(3),format=PNG, canvasObjects=(vp1,))
+    # print png images for all frames in the load step
+    for i_frame in range(len(odb.steps['Explicit_step'].frames)):
 
-cmd = 'ffmpeg -f image2 -framerate 25 -i anim-%03d.png -loop -0 pop_box_3stacks.gif'
+        vp1.odbDisplay.setFrame(step=0, frame=i_frame)
+        session.printToFile(fileName='anim-' + str(i_frame).zfill(3),format=PNG, canvasObjects=(vp1,))
 
-# Use subprocess.call
-try:
-    result = subprocess.call(cmd, shell=True)
-except Exception as e:
-    print("An error occurred in the gif generation:", e)
+    cmd = 'ffmpeg -f image2 -framerate 25 -i anim-%03d.png -loop -0 pop_box_3stacks.gif'
 
-change_dir(dir_0 , if_change_directly = 1)
+    # Use subprocess.call
+    try:
+        result = subprocess.call(cmd, shell=True)
+    except Exception as e:
+        print("An error occurred in the gif generation:", e)
+
+    change_dir(dir_0 , if_change_directly = 1)

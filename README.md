@@ -61,7 +61,6 @@ BC_dict = {
     'friction_coef': 0.4}       # Coefficient of friction [-]
 ```
 
-jjj
 
 ```python
 model_def = {
@@ -81,6 +80,30 @@ model_def = {
 Figure 2: Structure of the model function <code>make_model</code> that creates, runs, and evaluates the Lego model from the input dictionaries <code>assembly</code>, <code>explicit_par</code>, and <code>lego_geom</code>. Note that <code>lego_geom</code> is optional. By default, it contains  basic Lego dimensions and the Lego material properties.
 </p>
 
+As observed, it's feasible to designate colors for the various cubes in each stack. Below is the comprehensive color library used in the script:
+
+```python
+color_lib = {
+     'White': 'ffffff', 'Very Light Gray': 'e5e5e5', 'Light Gray': '919191', 'Dark Gray': '615050',
+     'Black': '1e1e1e', 'Dark Red': '631116',
+     'Red': 'b10b0f', 'Coral': 'ff7669', 'Dark Salmon': 'ff592a', 'Salmon': 'ff7256',
+     'Light Salmon': 'ffc0af', 'Sand Red': 'c28276', 'Brown': '633721',
+     'Dark Orange': 'b04a17', 'Rust': 'af401c', 'Neon Orange': 'ff5041', 'Orange': 'ff7324',
+     'Medium Orange': 'ff9a38', 'Bright Light Orange': 'ffbe2c', 'Light Orange': 'ffb23f',
+     'Very Light Orange': 'ffd69e', 'Dark Yellow': 'de8c34', 'Yellow': 'ffda32',
+     'Light Yellow': 'ffe39a', 'Bright Light Yellow': 'ffec89', 'Neon Yellow': 'fff938',
+     'Neon Green': 'd5ef5b', 'Light Lime': 'e9eab8','Medium Lime': 'dcd931', 
+     'Fabuland Lime': 'a1ca41', 'Lime': 'bbd930', 'Dark Olive Green': '6b693b',
+     'Medium Green': '7ed986', 'Light Green': 'cfebcc', 'Sand Green': '95b69a',
+     'Dark Turquoise': '009794', 'Light Turquoise': '00bdb4', 'Aqua': 'afe1d7', 'Light Aqua': 'c5ece7',
+     'Dark Blue': '1e314c', 'Blue': '004f99', 'Dark Azure': '0096d8', 'Little Robots Blue': '43b7de',
+     'Maersk Blue': '69b9d1', 'Medium Azure': '50c7da', 'Sky Blue': '76cedc', 'Medium Blue': '71a4d0',
+     'Bright Light Blue': 'b1cbe9', 'Light Blue': 'bfd4dc', 'Sand Blue': '7b8fa0',
+     'Dark Blue-Violet': '1731a2', 'Violet': '2a4296', 'Blue-Violet': '4065e7', 'Lilac': '6d5bc3'}
+```
+Most of these colors were sourced from [BrickFEM](https://github.com/mpletz/BrickFEM/tree/main), which served as a significant inspiration for many features in this script. You can add additional colors to this dictionary by simply updating it in the `post_processing.py` script.
+
+
 #### 1.1 Definition of the stack and box unit
 
 #### 1.2 Dimensions and other parameters
@@ -94,3 +117,15 @@ Figure 2: Structure of the model function <code>make_model</code> that creates, 
 #### 2.1 General assumptions
 
 #### 2.2 Definition 
+
+### 3. Some use cases
+
+### 4. Possible issues
+There are a few potential issues to be aware of when using this script due to certain assumptions and limitations:
+
+- **Plate Buckling:** In certain model conditions, particularly when there is a combination of stiffness in the spring and shell materials alongside the utilization of small angles, plate buckling may occur. This phenomenon can prevent the cube from unfolding as anticipated.
+- **Interaction Modes:** The script can be invoked in two ways: interactively or in the background. Interactively, you can use `abaqus cae script=script.py` in the command line or within an open Abaqus CAE window. Alternatively, you can run it in the background with `abaqus cae nogui=script.py` in the command line. Note that the `waitForCompletion` command, used to pause execution until the solver finishes, may cause crashes when Abaqus is called interactively. This issue is a known bug in Abaqus.
+- **Script Looping:** Running the script within a loop might encounter issues, possibly related to the `waitForCompletion` command. A robust alternative for running multiple simulations is to set `run_job` to false and then execute all model simulations simultaneously or sequentially. Another approach is to open a separate instance of Abaqus CAE for each model creation and run each model separately. This could be achieved using Python 3, where model properties can be written to a .json file before running the script. Abaqus can then be invoked using the subprocess library to execute `abaqus cae noGui` from the command line. However, implementing this approach would require significant code restructuring, which is not currently planned for future updates.
+
+### 5. Possible updates
+While there are various aspects of the script that could be enhanced, there are no immediate plans for future updates. The current version of the script can be considered final, with the possibility of minor updates or fixes at most.
