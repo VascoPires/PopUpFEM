@@ -77,9 +77,6 @@ model_def = {
 ![](images/lego-functions0.png)
 <p align="center">
 
-Figure 2: Structure of the model function <code>make_model</code> that creates, runs, and evaluates the Lego model from the input dictionaries <code>assembly</code>, <code>explicit_par</code>, and <code>lego_geom</code>. Note that <code>lego_geom</code> is optional. By default, it contains  basic Lego dimensions and the Lego material properties.
-</p>
-
 As observed, it's feasible to designate colors for the various cubes in each stack. Below is the comprehensive color library used in the script:
 
 ```python
