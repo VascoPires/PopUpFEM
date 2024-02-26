@@ -31,7 +31,7 @@ The syntax in the input dictionaries and the details of the model are described 
 
 ### 1. Using the script
 
-The script is mainly composed by three main dictionaries, the `main_dict` where the main model parameters are defined, the `BC_dict` with the important boundary conditions and the `model_def` where stacks of box units are defined with the specified colors.
+The script is mainly composed by three main dictionaries, the `main_dict` where the main model parameters are defined, the `BC_dict` with the important boundary conditions and the `model_def` where stacks of box units are defined with the specified colors. On the `main_dict` dictionary the general modelling conditions are defined such as the mechanical properties of the shells, the dimensions etc. In this dictionary it is also defined if you desire to run the job after the model is generated and to make a gift of the results.
 
 ```python
 main_dict = {
@@ -48,9 +48,11 @@ main_dict = {
     'num_intervals': 20,        # Number of frames/intervals [-]
     'nCPU' : 6,                 # Number of CPUs to be used
     'Job_name': '1_c_2D',       # Job name. If no name is given, an automatic name is attributed
-    'run_job': True}            # Runs the job after generating the model - Typically work best with ABAQUS noGui 
+    'run_job': True,            # Runs the job after generating the model - Typically work best with ABAQUS noGui 
+    'Make_gif': False}          # Generates a gif using FFmpeg   
 ```
 
+The second dictionary regards the boundary conditions of the model, namely the fold angle (which can be seen in Fig.X), the band stiffness and respective reference length, which defines the band pre-load and finally the gravity constant and the friction coefficient used in the simulation. 
 
 ```python
 BC_dict = {
@@ -102,6 +104,8 @@ Most of these colors were sourced from [BrickFEM](https://github.com/mpletz/Bric
 
 
 #### 1.1 Definition of the stack and box unit
+
+
 
 #### 1.2 Dimensions and other parameters
 

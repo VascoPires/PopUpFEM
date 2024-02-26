@@ -16,6 +16,39 @@ from collections import OrderedDict
 
 ########### Post_Processsing ######
 
+def change_dir(dir_name, if_change_directly = 0, if_change=0, if_clear=0):
+    """Create folder and possibly change the work directory to it
+
+    Args:
+    dir_name (str): String that defines the directory name. Can also be a path if used with if_change_directly = True
+    if_change_directly (bool): If yes the directory is changed directory if it is given in dir_name
+    if_change (bool): If the directory should be set as the work directory
+    if_clear (bool): If the directory already exists, should its content (including all sub-folders) be deleted 
+
+    Returns:
+    dir_abs (str): The absolute path of the created directory
+    """
+    dir_abs = os.path.abspath('')
+
+    if if_change_directly:
+        os.chdir(dir_name)
+        return
+    # if path does not exist: create
+    if os.path.exists(dir_name) == 0:
+        os.mkdir(dir_name)
+    else:
+        # if it exists: clear if if_clear==1
+        if if_clear:
+            shutil.rmtree(dir_name)
+            os.mkdir(dir_name)
+    dir1 = dir_abs + "/" + dir_name
+
+    # change into the dir_name directory
+    if if_change:
+        os.chdir(dir1)
+    return dir_abs
+
+
 def remove_files(dir0,type_list=('.log', '.msg')):
     """Remove all files in the directory dir that end with the strings
     given in type_list and additional predefined strings. Some only with
@@ -269,16 +302,7 @@ vp1.assemblyDisplay.setValues(optimizationTasks=OFF, geometricRestrictions=OFF,
 # select the iso view and fit model into the viewport
 vp1.view.fitView()
 
-
-# set the color mapping
-cmap = vp1.colorMappings['Part instance']
-vp1.setColor(colorMapping=cmap)
-vp1.disableMultipleColors()
-
-cmap.updateOverrides(overrides=cmap_dict)
-cmap = vp1.colorMappings['Part instance']
-vp1.setColor(colorMapping=cmap)
-vp1.disableMultipleColors()
+vp1.odbDisplay.display.setValues(plotState=(CONTOURS_ON_DEF, ))
 
 vp1.setValues(width=160, height=160)
 vp1.odbDisplay.display.setValues(plotState=(DEFORMED, ))
