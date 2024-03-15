@@ -10,10 +10,10 @@ Poping boxes is a project developed using Abaqus/Python scripting, in order to s
 
 Examples:
 - [Pop Up Cubes Card Tutorial - From DIY Blaster](https://www.youtube.com/watch?v=PdaHHFXTUxQ)
--  [Pop up Cubes in a box Tutorial - From Srushti Patil](https://www.youtube.com/watch?v=h3P-WZ2uPx0&t)
--  [How to Make BOOMF Jumping Box Pop Up Cube - From Joy in Crafting](https://www.youtube.com/watch?v=jKvsseAAZmo)
+- [Pop up Cubes in a box Tutorial - From Srushti Patil](https://www.youtube.com/watch?v=h3P-WZ2uPx0&t)
+- [How to Make BOOMF Jumping Box Pop Up Cube - From Joy in Crafting](https://www.youtube.com/watch?v=jKvsseAAZmo)
 
-This project was initially conceived as a "Kitchen Mechanics" project using Abaqus Python scripting, which was challenged to me by a colleague.
+This project was initially conceived as a "Kitchen Mechanics" project using Abaqus Python scripting, which was challenged to me by a colleague, and is now part of my mini-series of "Fun Abaqus" projects.
 <div align="center">
    <img src="images/pop_boxes_video.gif">
     Figure 1: Jumping cubes.
@@ -31,7 +31,11 @@ The syntax in the input dictionaries and the details of the model are described 
 
 ### 1. Using the script
 
-The script is mainly composed by three main dictionaries, the `main_dict` where the main model parameters are defined, the `BC_dict` with the important boundary conditions and the `model_def` where stacks of box units are defined with the specified colors. On the `main_dict` dictionary the general modelling conditions are defined such as the mechanical properties of the shells, the dimensions etc. In this dictionary it is also defined if you desire to run the job after the model is generated and to make a gift of the results.
+The script is mainly composed by three main dictionaries, the `main_dict` where the main model parameters are defined, the `BC_dict` with the relevant boundary conditions and the `model_def` where stacks of box units are defined with the specified colors. On the `main_dict` dictionary the general modelling conditions are defined such as the mechanical properties of the shells, the dimensions etc. In this dictionary it is also defined if you desire to run the job after the model is generated and to generate a gif of the results. Each input dictionary is explained next.
+
+#### Main dictionary
+
+The main dictionary contains crucial information required for generating a cube unit, including dimensions and material properties. The Young's modulus (typically for paper) and Poisson's ratio have minimal impact on the results. The most relevant material parameters for the simulation are the band stiffness (defined in the `BC_dict`) and shell density. However, it's important to note that shell stiffness significantly affects the likelihood of buckling, so having adequate and realistic values for the stiffness of the shell is important.
 
 ```python
 main_dict = {
@@ -52,7 +56,9 @@ main_dict = {
     'Make_gif': False}          # Generates a gif using FFmpeg   
 ```
 
-The second dictionary regards the boundary conditions of the model, namely the fold angle (which can be seen in Fig.X), the band stiffness and respective reference length, which defines the band pre-load and finally the gravity constant and the friction coefficient used in the simulation. 
+#### Boundary Conditions dictionary
+
+The second dictionary regards the boundary conditions of the model, namely the fold angle (which can be seen in Fig.X), the band stiffness and respective reference length, which defines the band pre-load, and finally the gravity constant and the friction coefficient used in the simulation. Both this dictionary and the main dictionary are immutable and independent of the number of box units or stacks, i.e, all the box units share the same properties of both dictionaries.
 
 ```python
 BC_dict = {
@@ -63,6 +69,11 @@ BC_dict = {
     'friction_coef': 0.4}       # Coefficient of friction [-]
 ```
 
+#### Model Definition dictionary
+
+In this dictionary, it is possible to define the different stacks of unit boxes. Of course, in the case of only one box, the model is defined with only one stack and one unit box in said stack. Each stack is defined is defined by the position ('dX','dY') and the number of unit boxes in a stack. Colors can also be defined optionally, where the order of the colors correspond to the box numbering starting in the botton of the stack and ending on the top one. Furtheremore, a box can also be defined optinlayy and be added to the simulation. The box can be defined with the dimenions 'l_X', 'l_Y' and 'l_Z' and if it has a Lid or not. Both the box and the lid are treated as rigid surfaces in the simulation with hard contact. 
+
+Please note, that there is no routine checking if the stacks overlap or not, so the user should check said information and make sure that no overlap occurs. 
 
 ```python
 model_def = {
@@ -76,10 +87,7 @@ model_def = {
         {'n':3,'dX':0.0,'dY':-main_dict['l']-10.0, 'colors' : ['Very Light Gray', 'Light Gray', 'Dark Gray']}}
 ```
 
-![](images/lego-functions0.png)
-<p align="center">
-
-As observed, it's feasible to designate colors for the various cubes in each stack. Below is the comprehensive color library used in the script:
+Regarding the colors of the boxes, one can define such dictionary and includ it on the post_processing script `post_processing.py`. The implemented colors are the following:
 
 ```python
 color_lib = {
@@ -100,7 +108,7 @@ color_lib = {
      'Bright Light Blue': 'b1cbe9', 'Light Blue': 'bfd4dc', 'Sand Blue': '7b8fa0',
      'Dark Blue-Violet': '1731a2', 'Violet': '2a4296', 'Blue-Violet': '4065e7', 'Lilac': '6d5bc3'}
 ```
-Most of these colors were sourced from [BrickFEM](https://github.com/mpletz/BrickFEM/tree/main), which served as a significant inspiration for many features in this script. You can add additional colors to this dictionary by simply updating it in the `post_processing.py` script.
+Most of these colors were sourced from [BrickFEM](https://github.com/mpletz/BrickFEM/tree/main), which served as a significant inspiration for many features in this script. You can add additional colors to this dictionary by simply updating it ine `post_processing.py` script.
 
 
 #### 1.1 Definition of the stack and box unit
@@ -111,7 +119,6 @@ Most of these colors were sourced from [BrickFEM](https://github.com/mpletz/Bric
 
 #### 1.3 Running the model
 
-#### 1.4 Output of the model
 
 ### 2. Under the hood
 
@@ -124,9 +131,9 @@ Most of these colors were sourced from [BrickFEM](https://github.com/mpletz/Bric
 ### 4. Possible issues
 There are a few potential issues to be aware of when using this script due to certain assumptions and limitations:
 
-- **Plate Buckling:** In certain model conditions, particularly when there is a combination of stiffness in the spring and shell materials alongside the utilization of small angles, plate buckling may occur. This phenomenon can prevent the cube from unfolding as anticipated.
+- **Plate Buckling:** In certain model conditions, particularly when there is a combination of high spring and shell stiffness alongside the utilization of small angles, plate buckling may occur. This phenomenon can prevent the cube from unfolding as anticipated. 
 - **Interaction Modes:** The script can be invoked in two ways: interactively or in the background. Interactively, you can use `abaqus cae script=script.py` in the command line or within an open Abaqus CAE window. Alternatively, you can run it in the background with `abaqus cae nogui=script.py` in the command line. Note that the `waitForCompletion` command, used to pause execution until the solver finishes, may cause crashes when Abaqus is called interactively. This issue is a known bug in Abaqus.
-- **Script Looping:** Running the script within a loop might encounter issues, possibly related to the `waitForCompletion` command. A robust alternative for running multiple simulations is to set `run_job` to false and then execute all model simulations simultaneously or sequentially. Another approach is to open a separate instance of Abaqus CAE for each model creation and run each model separately. This could be achieved using Python 3, where model properties can be written to a .json file before running the script. Abaqus can then be invoked using the subprocess library to execute `abaqus cae noGui` from the command line. However, implementing this approach would require significant code restructuring, which is not currently planned for future updates.
+- **Script Looping:** Running the script within a loop might encounter issues, possibly related to the `waitForCompletion` command. A robust alternative for running multiple simulations is to set `run_job` to false and then execute all model simulations simultaneously or sequentially. Another approach is to open a separate instance of Abaqus CAE for each model creation and run each model separately. This could be achieved using python, where model properties can be written to a .json file before running the script. Abaqus can then be invoked using the subprocess library to execute `abaqus cae noGui` from the command line. However, implementing this approach would require significant code restructuring, which is not currently planned for future updates.
 
 ### 5. Possible updates
 While there are various aspects of the script that could be enhanced, there are no immediate plans for future updates. The current version of the script can be considered final, with the possibility of minor updates or fixes at most.
