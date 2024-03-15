@@ -113,7 +113,7 @@ Most of these colors were sourced from [BrickFEM](https://github.com/mpletz/Bric
 
 #### 1.1 Definition of the stack and box unit
 
-
+The
 
 #### 1.2 Dimensions and other parameters
 
