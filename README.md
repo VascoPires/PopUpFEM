@@ -71,7 +71,7 @@ BC_dict = {
 
 #### Model Definition dictionary
 
-In this dictionary, it is possible to define the different stacks of unit boxes. Of course, in the case of only one box, the model is defined with only one stack and one unit box in said stack. Each stack is defined is defined by the position ('dX','dY') and the number of unit boxes in a stack. Colors can also be defined optionally, where the order of the colors correspond to the box numbering starting in the botton of the stack and ending on the top one. Furtheremore, a box can also be defined optinlayy and be added to the simulation. The box can be defined with the dimenions 'l_X', 'l_Y' and 'l_Z' and if it has a Lid or not. Both the box and the lid are treated as rigid surfaces in the simulation with hard contact. 
+In this dictionary, it is possible to define the different stacks of unit boxes. Of course, in the case of only one box, the model is defined with only one stack and one unit box in said stack. Each stack is defined is defined by the position ('dX','dY') and the number of unit boxes in a stack. Colors can also be defined optionally, where the order of the colors correspond to the box numbering starting in the bottom of the stack and ending on the top one. Furthermore, a box can also be defined optionally and be added to the simulation. The box can be defined with the dimensions 'l_X', 'l_Y' and 'l_Z' and if it has a Lid or not. Both the box and the lid are treated as rigid surfaces in the simulation with hard contact. 
 
 Please note, that there is no routine checking if the stacks overlap or not, so the user should check said information and make sure that no overlap occurs. 
 
@@ -113,9 +113,11 @@ Most of these colors were sourced from [BrickFEM](https://github.com/mpletz/Bric
 
 #### 1.1 Definition of the stack and box unit
 
-The
+A box unit is either a "2D" or a 3D box and is defined by 4 or 12 shell instances/parts respectively. A stack is a group of unit boxes stacked vertically on top of each other. Only one unit box type can be defined in the current script (however, with some minor modifications it can be more general), however multiple stacks can be defined. The unit box properties can be defined using the dictionaries `main_dict` and `BC_dict`, while the different stacks are defined using the `model_def` dictionary with the syntax defined earlier. Figure 2 and Figure 3 shows some 
 
 #### 1.2 Dimensions and other parameters
+
+
 
 #### 1.3 Running the model
 
