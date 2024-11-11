@@ -111,31 +111,17 @@ color_lib = {
 Most of these colors were sourced from [BrickFEM](https://github.com/mpletz/BrickFEM/tree/main), which served as a significant inspiration for many features in this script. You can add additional colors to this dictionary by simply updating it ine `post_processing.py` script.
 
 
-#### 1.1 Definition of the stack and box unit
+#### Definition of the stack and box unit
 
 A box unit is either a "2D" or a 3D box and is defined by 4 or 12 shell instances/parts respectively. A stack is a group of unit boxes stacked vertically on top of each other. Only one unit box type can be defined in the current script (however, with some minor modifications it can be more general), however multiple stacks can be defined. The unit box properties can be defined using the dictionaries `main_dict` and `BC_dict`, while the different stacks are defined using the `model_def` dictionary with the syntax defined earlier. Figure 2 and Figure 3 shows some 
 
-#### 1.2 Dimensions and other parameters
 
-
-
-#### 1.3 Running the model
-
-
-### 2. Under the hood
-
-#### 2.1 General assumptions
-
-#### 2.2 Definition 
-
-### 3. Some use cases
-
-### 4. Possible issues
+### 2. Possible issues
 There are a few potential issues to be aware of when using this script due to certain assumptions and limitations:
 
 - **Plate Buckling:** In certain model conditions, particularly when there is a combination of high spring and shell stiffness alongside the utilization of small angles, plate buckling may occur. This phenomenon can prevent the cube from unfolding as anticipated. 
 - **Interaction Modes:** The script can be invoked in two ways: interactively or in the background. Interactively, you can use `abaqus cae script=script.py` in the command line or within an open Abaqus CAE window. Alternatively, you can run it in the background with `abaqus cae nogui=script.py` in the command line. Note that the `waitForCompletion` command, used to pause execution until the solver finishes, may cause crashes when Abaqus is called interactively. This issue is a known bug in Abaqus.
 - **Script Looping:** Running the script within a loop might encounter issues, possibly related to the `waitForCompletion` command. A robust alternative for running multiple simulations is to set `run_job` to false and then execute all model simulations simultaneously or sequentially. Another approach is to open a separate instance of Abaqus CAE for each model creation and run each model separately. This could be achieved using python, where model properties can be written to a .json file before running the script. Abaqus can then be invoked using the subprocess library to execute `abaqus cae noGui` from the command line. However, implementing this approach would require significant code restructuring, which is not currently planned for future updates.
 
-### 5. Possible updates
+### 3. Possible updates
 While there are various aspects of the script that could be enhanced, there are no immediate plans for future updates. The current version of the script can be considered final, with the possibility of minor updates or fixes at most.
