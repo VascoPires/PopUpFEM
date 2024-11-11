@@ -58,7 +58,7 @@ main_dict = {
 
 #### Boundary Conditions dictionary
 
-The second dictionary regards the boundary conditions of the model, namely the fold angle (which can be seen in Fig.X), the band stiffness and respective reference length, which defines the band pre-load, and finally the gravity constant and the friction coefficient used in the simulation. Both this dictionary and the main dictionary are immutable and independent of the number of box units or stacks, i.e, all the box units share the same properties of both dictionaries.
+The second dictionary regards the boundary conditions of the model, namely the fold angle, the band stiffness and respective reference length, which defines the band pre-load, and finally the gravity constant and the friction coefficient used in the simulation. Both this dictionary and the main dictionary are immutable and independent of the number of box units or stacks, i.e, all the box units share the same properties of both dictionaries.
 
 ```python
 BC_dict = {
