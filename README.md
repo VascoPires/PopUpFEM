@@ -13,7 +13,7 @@ Examples:
 - [Pop up Cubes in a box Tutorial - From Srushti Patil](https://www.youtube.com/watch?v=h3P-WZ2uPx0&t)
 - [How to Make BOOMF Jumping Box Pop Up Cube - From Joy in Crafting](https://www.youtube.com/watch?v=jKvsseAAZmo)
 
-This project was initially conceived as a "Kitchen Mechanics" project using Abaqus Python scripting, which was challenged to me by a colleague, and is now part of my mini-series of "Fun Abaqus" projects.
+This project was initially conceived as a "Kitchen Mechanics" project using Abaqus Python scripting, which was challenged to me by a colleague [Martin Pletz](https://github.com/mpletz), and is now part of my mini-series of "Fun Abaqus" projects.
 <div align="center">
    <img src="images/pop_boxes_video.gif">
     Figure 1: Jumping cubes.
